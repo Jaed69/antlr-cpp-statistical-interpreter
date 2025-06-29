@@ -1,0 +1,7 @@
+services:
+  llvm-compiler:
+    build: .
+    container_name: cpp_antlr_env # Un nombre más descriptivo
+    # Montamos todo el directorio del proyecto
+    volumes:
+      - .:/app
