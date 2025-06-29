@@ -1,34 +1,34 @@
-# ANTLR C++ Statistical Interpreter
+# Intérprete Estadístico ANTLR C++
 
-A powerful C++ interpreter built with ANTLR4 for statistical analysis and mathematical computations.
+Un potente intérprete C++ construido con ANTLR4 para análisis estadístico y cálculos matemáticos.
 
-## Features
+## Características
 
-- **Data Types**: Support for `int`, `float`, and `string` types
-- **Mathematical Operations**: Basic arithmetic (`+`, `-`, `*`, `/`) and unary operations
-- **Statistical Functions**: 
-  - `mean()` - Calculate arithmetic mean
-  - `variance()` - Calculate variance
-  - `fisher()` - Calculate Fisher skewness coefficient
-- **Variable Management**: Declare and use variables with symbol table
-- **Expression Evaluation**: Complex mathematical expressions with parentheses
-- **Docker Support**: Containerized development environment
+- **Tipos de Datos**: Soporte para tipos `int`, `float` y `string`
+- **Operaciones Matemáticas**: Aritmética básica (`+`, `-`, `*`, `/`) y operaciones unarias
+- **Funciones Estadísticas**: 
+  - `mean()` - Calcular la media aritmética
+  - `variance()` - Calcular la varianza
+  - `fisher()` - Calcular el coeficiente de asimetría de Fisher
+- **Gestión de Variables**: Declarar y usar variables con tabla de símbolos
+- **Evaluación de Expresiones**: Expresiones matemáticas complejas con paréntesis
+- **Soporte Docker**: Entorno de desarrollo contenerizado
 
-## Quick Start
+## Inicio Rápido
 
-### Using Docker (Recommended)
+### Usando Docker (Recomendado)
 
-1. **Build and run the container:**
+1. **Construir y ejecutar el contenedor:**
    ```bash
    docker-compose up -d
    ```
 
-2. **Enter the container:**
+2. **Entrar al contenedor:**
    ```bash
    docker exec -it cpp_antlr_env bash
    ```
 
-3. **Compile the project:**
+3. **Compilar el proyecto:**
    ```bash
    cd /app
    rm -rf build && mkdir build && cd build
@@ -36,99 +36,99 @@ A powerful C++ interpreter built with ANTLR4 for statistical analysis and mathem
    make
    ```
 
-4. **Run the interpreter:**
+4. **Ejecutar el intérprete:**
    ```bash
-   # Create an input file with your code
+   # Crear un archivo de entrada con tu código
    echo "int x = 10; int y = 20; x + y * 2;" > ../src/input.txt
    
-   # Execute the interpreter
+   # Ejecutar el intérprete
    ./mi_interprete
    ```
 
-## Example Usage
+## Ejemplo de Uso
 
-Create a file `src/input.txt` with your code:
+Crea un archivo `src/input.txt` con tu código:
 
 ```cpp
-// Variable declarations
+// Declaración de variables
 int a = 5;
 int b = 15;
 float pi = 3.14159;
 
-// Basic operations
-a + b;          // Output: 20
-a * b;          // Output: 75
-pi * 2;         // Output: 6.28318
+// Operaciones básicas
+a + b;          // Salida: 20
+a * b;          // Salida: 75
+pi * 2;         // Salida: 6.28318
 
-// Statistical analysis
-mean(1, 2, 3, 4, 5);        // Output: 3
-variance(1, 2, 3, 4, 5);    // Output: 2
-fisher(1, 2, 3, 4, 5);      // Output: 0
+// Análisis estadístico
+mean(1, 2, 3, 4, 5);        // Salida: 3
+variance(1, 2, 3, 4, 5);    // Salida: 2
+fisher(1, 2, 3, 4, 5);      // Salida: 0
 ```
 
-## Grammar
+## Gramática
 
-The interpreter uses ANTLR4 grammar defined in `src/grammar/EmployeeEval.g4`:
+El intérprete usa la gramática ANTLR4 definida en `src/grammar/EmployeeEval.g4`:
 
-- **Variables**: `TYPE ID = expr;` where TYPE is `int`, `float`, or `string`
-- **Expressions**: Support for arithmetic operations with proper precedence
-- **Functions**: Built-in statistical functions
-- **Comments**: Line comments starting with `//`
+- **Variables**: `TIPO ID = expresión;` donde TIPO es `int`, `float` o `string`
+- **Expresiones**: Soporte para operaciones aritméticas con precedencia adecuada
+- **Funciones**: Funciones estadísticas incorporadas
+- **Comentarios**: Comentarios de línea que comienzan con `//`
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
-├── CMakeLists.txt          # Build configuration
-├── Dockerfile              # Docker container setup
-├── docker-compose.yml      # Docker Compose configuration
+├── CMakeLists.txt          # Configuración de compilación
+├── Dockerfile              # Configuración del contenedor Docker
+├── docker-compose.yml      # Configuración de Docker Compose
 ├── src/
 │   ├── grammar/
-│   │   └── EmployeeEval.g4 # ANTLR grammar definition
-│   ├── main.cpp            # Main interpreter program
-│   ├── EvalVisitor.cpp     # Visitor implementation
-│   ├── EvalVisitor.h       # Visitor header
-│   ├── SymbolTable.h       # Symbol table definition
-│   └── input.txt           # Input file for testing
-└── build/                  # Build directory (auto-generated)
+│   │   └── EmployeeEval.g4 # Definición de gramática ANTLR
+│   ├── main.cpp            # Programa principal del intérprete
+│   ├── EvalVisitor.cpp     # Implementación del visitor
+│   ├── EvalVisitor.h       # Cabecera del visitor
+│   ├── SymbolTable.h       # Definición de tabla de símbolos
+│   └── input.txt           # Archivo de entrada para pruebas
+└── build/                  # Directorio de compilación (auto-generado)
 ```
 
-## Requirements
+## Requisitos
 
-- **C++17** compatible compiler
+- Compilador compatible con **C++17**
 - **CMake 3.16+**
-- **Java 17+** (for ANTLR4 JAR)
+- **Java 17+** (para el JAR de ANTLR4)
 - **ANTLR 4.12.0**
-- **Docker** (for containerized development)
+- **Docker** (para desarrollo contenerizado)
 
-## Building from Source
+## Compilación desde el Código Fuente
 
-If you prefer not to use Docker:
+Si prefieres no usar Docker:
 
-1. Install dependencies (C++17, CMake, Java 17+)
-2. Download ANTLR 4.12.0 complete JAR
-3. Build:
+1. Instalar dependencias (C++17, CMake, Java 17+)
+2. Descargar el JAR completo de ANTLR 4.12.0
+3. Compilar:
    ```bash
    mkdir build && cd build
    cmake ..
    make
    ```
 
-## Contributing
+## Contribuir
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Haz fork del repositorio
+2. Crea tu rama de característica (`git checkout -b feature/caracteristica-increible`)
+3. Confirma tus cambios (`git commit -m 'Agregar característica increíble'`)
+4. Empuja a la rama (`git push origin feature/caracteristica-increible`)
+5. Abre un Pull Request
 
-## License
+## Licencia
 
-This project is open source and available under the [MIT License](LICENSE).
+Este proyecto es de código abierto y está disponible bajo la [Licencia MIT](LICENSE).
 
-## Author
+## Autor
 
 Jhamil Brijan Peña Cárdenas
 
 ---
 
-Built with ❤️ using ANTLR4 and C++
+Construido con ❤️ usando ANTLR4 y C++
