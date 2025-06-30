@@ -1,0 +1,101 @@
+// Sistema de Evaluación de Empleados en Construcción usando Coeficiente de Fisher
+
+// Declaración de empleados
+empleado juan_perez {
+    nombre: "Juan Pérez"
+    cargo: ingeniero
+    experiencia: 5 anos
+    area: estructural
+    rendimiento: alto
+}
+
+empleado maria_lopez {
+    nombre: "María López"
+    cargo: arquitecto
+    experiencia: 8 anos
+    area: acabados
+    rendimiento: alto
+}
+
+empleado carlos_ruiz {
+    nombre: "Carlos Ruiz"
+    cargo: operario
+    experiencia: 3 anos
+    area: obra_civil
+    rendimiento: medio
+}
+
+empleado ana_garcia {
+    nombre: "Ana García"
+    cargo: supervisor
+    experiencia: 6 anos
+    area: seguridad
+    rendimiento: alto
+}
+
+// Declaración de criterios de evaluación
+criterio productividad_criterio {
+    peso: 0.3
+    tipo: cuantitativo
+    metrica: productividad
+}
+
+criterio calidad_criterio {
+    peso: 0.25
+    tipo: cualitativo
+    metrica: calidad_trabajo
+}
+
+// Declaración de grupos para análisis
+grupo alto_rendimiento {
+    miembros: juan_perez, maria_lopez, ana_garcia
+}
+
+grupo rendimiento_promedio {
+    miembros: carlos_ruiz
+}
+
+// Evaluaciones individuales
+evaluar juan_perez {
+    productividad: 85.5
+    calidad_trabajo: EXCELENTE
+    seguridad_laboral: 90.0
+    liderazgo: BUENO
+}
+
+evaluar maria_lopez {
+    productividad: 92.3
+    calidad_trabajo: EXCELENTE
+    seguridad_laboral: 88.5
+    liderazgo: EXCELENTE
+}
+
+evaluar carlos_ruiz {
+    productividad: 75.0
+    calidad_trabajo: BUENO
+    seguridad_laboral: 82.0
+    liderazgo: REGULAR
+}
+
+evaluar ana_garcia {
+    productividad: 89.1
+    calidad_trabajo: EXCELENTE
+    seguridad_laboral: 95.0
+    liderazgo: EXCELENTE
+}
+
+// Cálculo del coeficiente de Fisher
+fisher(
+    grupo_a: alto_rendimiento,
+    grupo_b: rendimiento_promedio,
+    variables: productividad, calidad_trabajo, seguridad_laboral, liderazgo
+)
+
+// Consultas del sistema
+consultar empleado juan_perez
+
+ranking por productividad limite 3
+
+estadisticas de productividad para grupo alto_rendimiento
+
+predecir rendimiento de carlos_ruiz

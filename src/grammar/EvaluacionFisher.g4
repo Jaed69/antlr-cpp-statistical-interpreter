@@ -187,7 +187,7 @@ DE: 'de' | 'DE';
 POR: 'por' | 'POR';
 PARA: 'para' | 'PARA';
 LIMITE: 'limite' | 'LIMITE';
-ANOS: 'años' | 'AÑOS' | 'anos' | 'ANOS';
+ANOS: 'años' | 'AÑOS' | 'anos' | 'ANOS' | 'anios' | 'ANIOS';
 
 // Símbolos
 LBRACE: '{';

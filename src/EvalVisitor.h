@@ -1,29 +1,48 @@
 #pragma once
-#include "SymbolTable.h"
+#include "SistemaEvaluacion.h"
 
 // Incluimos los headers que ANTLR generará
-#include "EmployeeEvalBaseVisitor.h"
+#include "EvaluacionFisherBaseVisitor.h"
 
-class EvalVisitor : public EmployeeEvalBaseVisitor {
+class EvaluacionVisitor : public EvaluacionFisherBaseVisitor {
 public:
-    // El método visit retorna nuestra variante SymbolValue
-    antlrcpp::Any visitStatement(EmployeeEvalParser::StatementContext *ctx) override;
-    antlrcpp::Any visitDeclaration(EmployeeEvalParser::DeclarationContext *ctx) override;
-    antlrcpp::Any visitNumberExpr(EmployeeEvalParser::NumberExprContext *ctx) override;
-    antlrcpp::Any visitStringExpr(EmployeeEvalParser::StringExprContext *ctx) override;
-    antlrcpp::Any visitUnaryExpr(EmployeeEvalParser::UnaryExprContext *ctx) override;
-    antlrcpp::Any visitIdExpr(EmployeeEvalParser::IdExprContext *ctx) override;
-    antlrcpp::Any visitMulDivExpr(EmployeeEvalParser::MulDivExprContext *ctx) override;
-    antlrcpp::Any visitAddSubExpr(EmployeeEvalParser::AddSubExprContext *ctx) override;
-    antlrcpp::Any visitParensExpr(EmployeeEvalParser::ParensExprContext *ctx) override;
-    antlrcpp::Any visitFuncCallExpr(EmployeeEvalParser::FuncCallExprContext *ctx) override;
-
-    // Método para imprimir la tabla de símbolos al final
-    void printSymbolTable();
+    EvaluacionVisitor();
+    
+    // Visitor methods para la nueva gramática
+    antlrcpp::Any visitSistema(EvaluacionFisherParser::SistemaContext *ctx) override;
+    
+    // Declaraciones
+    antlrcpp::Any visitDeclaracionEmpleado(EvaluacionFisherParser::DeclaracionEmpleadoContext *ctx) override;
+    antlrcpp::Any visitDeclaracionCriterio(EvaluacionFisherParser::DeclaracionCriterioContext *ctx) override;
+    antlrcpp::Any visitDeclaracionGrupo(EvaluacionFisherParser::DeclaracionGrupoContext *ctx) override;
+    
+    // Atributos de empleado
+    antlrcpp::Any visitAtributoEmpleado(EvaluacionFisherParser::AtributoEmpleadoContext *ctx) override;
+    
+    // Evaluaciones
+    antlrcpp::Any visitCalculoFisher(EvaluacionFisherParser::CalculoFisherContext *ctx) override;
+    antlrcpp::Any visitEvaluacionIndividual(EvaluacionFisherParser::EvaluacionIndividualContext *ctx) override;
+    antlrcpp::Any visitComparacionGrupos(EvaluacionFisherParser::ComparacionGruposContext *ctx) override;
+    
+    // Consultas
+    antlrcpp::Any visitConsultaEmpleado(EvaluacionFisherParser::ConsultaEmpleadoContext *ctx) override;
+    antlrcpp::Any visitConsultaRanking(EvaluacionFisherParser::ConsultaRankingContext *ctx) override;
+    antlrcpp::Any visitConsultaEstadisticas(EvaluacionFisherParser::ConsultaEstadisticasContext *ctx) override;
+    antlrcpp::Any visitConsultaPrediccion(EvaluacionFisherParser::ConsultaPrediccionContext *ctx) override;
+    
+    // Método para obtener el sistema de evaluación
+    SistemaEvaluacionFisher& getSistema() { return sistema; }
+    
+    void imprimirReporte();
 
 private:
-    SymbolTable table;
+    SistemaEvaluacionFisher sistema;
     
-    // Función auxiliar para convertir SymbolValue a double
-    double valueToDouble(const SymbolValue& val);
+    // Funciones auxiliares para conversión de tipos
+    TipoCargo stringATipoCargo(const std::string& cargo);
+    AreaConstructora stringAAreaConstructora(const std::string& area);
+    NivelRendimiento stringANivelRendimiento(const std::string& nivel);
+    TipoCriterio stringATipoCriterio(const std::string& tipo);
+    MetricaCriterio stringAMetricaCriterio(const std::string& metrica);
+    EscalaLikert stringAEscalaLikert(const std::string& escala);
 };

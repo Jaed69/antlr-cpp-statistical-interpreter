@@ -1,0 +1,55 @@
+empleado juan_perez {
+    nombre: "Juan Perez"
+    cargo: ingeniero
+    experiencia: 5 anos
+    area: estructural
+    rendimiento: alto
+}
+
+empleado maria_lopez {
+    nombre: "Maria Lopez"
+    cargo: arquitecto
+    experiencia: 8 anos
+    area: acabados
+    rendimiento: alto
+}
+
+empleado carlos_ruiz {
+    nombre: "Carlos Ruiz"
+    cargo: operario
+    experiencia: 3 anos
+    area: obra_civil
+    rendimiento: medio
+}
+
+grupo alto_rendimiento {
+    miembros: juan_perez, maria_lopez
+}
+
+grupo medio_rendimiento {
+    miembros: carlos_ruiz
+}
+
+evaluar juan_perez {
+    productividad: 4.5
+    calidad_trabajo: 4.2
+    seguridad_laboral: 4.8
+}
+
+evaluar maria_lopez {
+    productividad: 4.7
+    calidad_trabajo: 4.9
+    seguridad_laboral: 4.3
+}
+
+evaluar carlos_ruiz {
+    productividad: 3.2
+    calidad_trabajo: 3.5
+    seguridad_laboral: 4.1
+}
+
+consultar empleado juan_perez
+consultar empleado maria_lopez
+ranking por productividad limite 3
+estadisticas
+predecir rendimiento de carlos_ruiz

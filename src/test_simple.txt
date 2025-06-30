@@ -1,0 +1,10 @@
+// Archivo de prueba simple
+empleado test_user {
+    nombre: "Test User"
+    cargo: ingeniero
+    experiencia: 5 anos
+    area: estructural
+    rendimiento: alto
+}
+
+consultar empleado test_user

@@ -39,11 +39,12 @@ function(add_antlr_parser GRAMMAR_FILE)
     include_directories(${GENERATED_DIR})
 endfunction()
 
-add_antlr_parser(EmployeeEval.g4)
+add_antlr_parser(EvaluacionFisher.g4)
 
 add_executable(mi_interprete
     src/main.cpp
     src/EvalVisitor.cpp
+    src/SistemaEvaluacion.cpp
     ${ANTLR_GENERATED_SOURCES}
 )
 
