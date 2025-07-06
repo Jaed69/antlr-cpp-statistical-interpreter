@@ -1162,7 +1162,7 @@ Este proyecto está bajo la **Licencia MIT** - ver el archivo [LICENSE](LICENSE)
 
 - **Jhamil Brijan Peña Cárdenas** - *Desarrollo inicial y arquitectura del sistema* - [GitHub](https://github.com/Jaed69)
 - **Mireya Nicole Sihuincha Schermuly** - *Desarrollo y testing* - [GitHub](https://github.com/sowiexsker894)
-- **Lizbeth Olivera Alvarez** - *Desarrollo y documentación* - [GitHub](https://github.com/Lisbeth851)
+- **Lizbeth Olivera Alvarez** - *Desarrollo y documentación* - [GitHub](https://github.com/Lizbeth851)
 
 ## 🙏 Agradecimientos
 
