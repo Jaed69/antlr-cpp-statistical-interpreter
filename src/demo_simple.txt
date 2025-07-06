@@ -1,0 +1,77 @@
+# Demo Simple del Sistema de Evaluación Fisher
+
+# Declaración de empleados
+empleado ingeniero_principal {
+    nombre: "Pedro Gómez"
+    cargo: ingeniero
+    experiencia: 12 anos
+    area: estructural
+    rendimiento: alto
+}
+
+empleado arquitecto_senior {
+    nombre: "Ana Ruiz"
+    cargo: arquitecto
+    experiencia: 8 anos
+    area: acabados
+    rendimiento: alto
+}
+
+empleado operario_nuevo {
+    nombre: "Carlos López"
+    cargo: operario
+    experiencia: 1 anos
+    area: obra_civil
+    rendimiento: bajo
+}
+
+# Crear grupos
+grupo equipo_lider {
+    miembros: ingeniero_principal, arquitecto_senior
+}
+
+grupo equipo_junior {
+    miembros: operario_nuevo
+}
+
+# Evaluaciones individuales
+evaluar ingeniero_principal {
+    productividad: 4.9
+    calidad_trabajo: 4.8
+    liderazgo: 4.7
+    conocimiento_tecnico: 4.9
+    seguridad_laboral: 4.8
+}
+
+evaluar arquitecto_senior {
+    productividad: 4.7
+    calidad_trabajo: 4.9
+    liderazgo: 4.6
+    conocimiento_tecnico: 4.8
+    seguridad_laboral: 4.5
+}
+
+evaluar operario_nuevo {
+    productividad: 3.2
+    calidad_trabajo: 3.1
+    liderazgo: 2.8
+    conocimiento_tecnico: 3.0
+    seguridad_laboral: 3.8
+}
+
+# Consultas
+consultar empleado ingeniero_principal
+consultar empleado operario_nuevo
+
+# Ranking
+ranking por productividad limite 3
+ranking por liderazgo limite 3
+
+# Estadísticas
+estadisticas
+estadisticas para grupo equipo_lider
+estadisticas para grupo equipo_junior
+
+# Predicciones
+predecir rendimiento de ingeniero_principal
+predecir rendimiento de operario_nuevo

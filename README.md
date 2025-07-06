@@ -1,52 +1,82 @@
-# 🏗️ Sistema de Evaluación de Empleados con Coeficiente de Fisher
+# 🏗️ Sistema de Evaluación de Empleados Fisher
 
-Un sistema avanzado de evaluación de personal para empresas constructoras que utiliza ANTLR4 y C++ para implementar un DSL (Domain Specific Language) especializado en análisis discriminante y predicción de rendimiento laboral.
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Jaed69/antlr-cpp-statistical-interpreter)
+[![C++](https://img.shields.io/badge/C%2B%2B-17-blue)](https://isocpp.org/)
+[![ANTLR](https://img.shields.io/badge/ANTLR-4.12.0-orange)](https://www.antlr.org/)
+[![Docker](https://img.shields.io/badge/Docker-supported-blue)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## 🚀 Características Principales
+> **Sistema avanzado de evaluación de empleados en construcción con análisis estadístico usando el Coeficiente de Fisher para predicción de rendimiento.**
 
-- **✅ DSL Completo**: Lenguaje específico de dominio para evaluación de empleados
-- **✅ Gestión Integral**: Empleados, criterios, grupos y evaluaciones
-- **✅ Análisis Estadístico**: Coeficiente de Fisher implementado
-- **✅ Predicción de Rendimiento**: Algoritmos de machine learning básico
-- **✅ Reporting Avanzado**: Consultas, rankings y estadísticas detalladas
-- **✅ Arquitectura Robusta**: ANTLR4 + C++17 + Docker
-- **✅ Testing Completo**: Casos de prueba verificados
+## 🎯 Descripción
 
-## 🏆 **NUEVO: Funcionalidades Implementadas y Verificadas**
+Este proyecto implementa un intérprete basado en C++ y ANTLR que procesa un **Lenguaje de Dominio Específico (DSL)** para la evaluación de empleados en el sector de la construcción. Utiliza técnicas estadísticas avanzadas, incluyendo el **Coeficiente de Fisher** para análisis discriminante y predicción de rendimiento.
 
-### ✅ **Sistema Completamente Funcional**
-- **Parser ANTLR4**: Gramática completa para evaluación de empleados
-- **Engine C++**: Procesamiento de datos y cálculos estadísticos
-- **Múltiples Casos de Uso**: Desde empleados individuales hasta análisis de grupos
-- **Reportes en Tiempo Real**: Estadísticas inmediatas y predicciones
+## ✨ Características Principales
 
-### ✅ **Funcionalidades Probadas**
-1. **Declaración de Empleados** ✅
-2. **Creación de Grupos** ✅
-3. **Evaluaciones Individuales** ✅
-4. **Consultas Especializadas** ✅
-5. **Rankings por Métricas** ✅
-6. **Estadísticas Generales** ✅
-7. **Predicción de Rendimiento** ✅
+### 🔧 Tecnologías
+- **C++17** con STL moderna
+- **ANTLR 4.12.0** para parsing y análisis léxico
+- **Docker** para entorno containerizado
+- **CMake** para gestión de build
+- **Visitor Pattern** para procesamiento del AST
 
-## 🔧 Requisitos del Sistema
+### 📊 Funcionalidades de Evaluación
+- **Gestión de empleados** con atributos detallados
+- **Evaluaciones multi-criterio** (productividad, calidad, seguridad, etc.)
+- **Análisis de grupos** con estadísticas comparativas
+- **Rankings personalizables** por criterios específicos
+- **Predicción de rendimiento** usando análisis discriminante de Fisher
 
-- **Docker** (recomendado) o:
-  - **CMake 3.16+**
-  - **C++17 compatible compiler** (GCC 9+, Clang 10+)
-  - **Java 17+** (para ANTLR4)
-  - **ANTLR4 4.12.0**
+### 🏗️ Especializado en Construcción
+- **Cargos específicos**: Ingeniero, Arquitecto, Supervisor, Técnico, Operario
+- **Áreas especializadas**: Estructural, Acabados, Obra Civil, Instalaciones, Seguridad, Calidad
+- **Métricas relevantes**: Seguridad laboral, cumplimiento de plazos, conocimiento técnico
 
-## 🚀 Instalación y Uso Rápido
+## 🚀 Instalación Rápida
 
-### Opción 1: Docker (Recomendado)
+### Usando Docker (Recomendado)
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/Jaed69/antlr-cpp-statistical-interpreter.git
+cd antlr-cpp-statistical-interpreter
+
+# Construir y ejecutar con Docker
+docker build -t fisher-evaluacion .
+docker run -it --name cpp_antlr_env fisher-evaluacion
+
+# Dentro del contenedor
+cd /app/build
+make
+./mi_interprete /app/src/demo_simple.txt
+```
+
+### Instalación Manual
+
+**Requisitos:**
+- C++17 compatible compiler (GCC 7+, Clang 5+, MSVC 2017+)
+- CMake 3.16+
+- ANTLR 4.12.0
+- Java 11+ (para ANTLR)
+
 ```bash
 # Clonar repositorio
-git clone https://github.com/twofi/UPC-Fisher.git
-cd UPC-Fisher
+git clone https://github.com/Jaed69/antlr-cpp-statistical-interpreter.git
+cd antlr-cpp-statistical-interpreter
 
-# Construir imagen Docker
-docker build -t fisher-interpreter .
+# Crear directorio build
+mkdir build && cd build
+
+# Configurar con CMake
+cmake ..
+
+# Compilar
+make
+
+# Ejecutar
+./mi_interprete ../src/demo_simple.txt
+```
 
 # Ejecutar compilación
 docker run --rm -v "${PWD}:/app" fisher-interpreter bash -c "
@@ -671,7 +701,7 @@ grupo equipo_acabados {
     miembros: arquitecto1, tecnico1, operario3
 }
 
-// Comparar rendimiento entre equipos
+# Comparar rendimiento entre equipos
 estadisticas para grupo equipo_estructural
 estadisticas para grupo equipo_acabados
 ```
@@ -695,3 +725,304 @@ ranking por conocimiento_tecnico limite 5
 // Evaluar candidatos para supervisión
 predecir rendimiento de operario_experimentado
 ```
+
+## 📝 Guía del DSL
+
+### Sintaxis Básica
+
+#### Comentarios
+```python
+# Comentario de línea con #
+// Comentario de línea con //
+/* Comentario de bloque */
+```
+
+#### Declaración de Empleados
+```python
+empleado juan_perez {
+    nombre: "Juan Pérez García"
+    cargo: ingeniero
+    experiencia: 5 anos
+    area: estructural
+    rendimiento: alto
+}
+```
+
+#### Evaluaciones
+```python
+evaluar juan_perez {
+    productividad: 4.8
+    calidad_trabajo: 4.6
+    seguridad_laboral: 4.9
+    cumplimiento_plazos: 4.5
+    conocimiento_tecnico: 4.7
+    liderazgo: 4.2
+}
+```
+
+#### Grupos y Análisis
+```python
+grupo ingenieros_senior {
+    miembros: juan_perez, maria_lopez, carlos_ruiz
+}
+
+# Estadísticas del grupo
+estadisticas para grupo ingenieros_senior
+```
+
+#### Consultas y Rankings
+```python
+# Consulta individual
+consultar empleado juan_perez
+
+# Ranking por criterio
+ranking por productividad limite 5
+
+# Predicción de rendimiento
+predecir rendimiento de juan_perez
+```
+
+### Tipos de Datos Soportados
+
+#### Cargos
+- `ingeniero` - Ingeniero civil/estructural
+- `arquitecto` - Arquitecto de proyecto
+- `supervisor` - Supervisor de obra
+- `tecnico` - Técnico especializado
+- `operario` - Operario de construcción
+
+#### Áreas de Construcción
+- `estructural` - Estructura y cimentación
+- `acabados` - Terminaciones y detalles
+- `obra_civil` - Obra civil general
+- `instalaciones` - Instalaciones técnicas
+- `seguridad` - Seguridad laboral
+- `calidad` - Control de calidad
+
+#### Criterios de Evaluación
+- `productividad` - Rendimiento en tareas
+- `calidad_trabajo` - Calidad del trabajo realizado
+- `seguridad_laboral` - Cumplimiento de normas de seguridad
+- `cumplimiento_plazos` - Puntualidad en entregas
+- `conocimiento_tecnico` - Conocimientos técnicos
+- `liderazgo` - Capacidad de liderazgo
+- `adaptabilidad` - Adaptación a cambios
+- `asistencia` - Asistencia y puntualidad
+
+## 🧪 Ejemplos de Uso
+
+### Ejemplo Básico
+```python
+# Declarar empleados
+empleado ingeniero_principal {
+    nombre: "Pedro Gómez"
+    cargo: ingeniero
+    experiencia: 12 anos
+    area: estructural
+    rendimiento: alto
+}
+
+empleado operario_nuevo {
+    nombre: "Carlos López"
+    cargo: operario
+    experiencia: 1 anos
+    area: obra_civil
+    rendimiento: bajo
+}
+
+# Evaluar empleados
+evaluar ingeniero_principal {
+    productividad: 4.9
+    calidad_trabajo: 4.8
+    seguridad_laboral: 4.8
+}
+
+evaluar operario_nuevo {
+    productividad: 3.2
+    calidad_trabajo: 3.1
+    seguridad_laboral: 3.8
+}
+
+# Consultas
+consultar empleado ingeniero_principal
+ranking por productividad limite 3
+estadisticas
+predecir rendimiento de operario_nuevo
+```
+
+### Ejemplo Avanzado con Grupos
+```python
+# Crear grupos para análisis
+grupo equipo_senior {
+    miembros: ing_principal, arq_senior, sup_experto
+}
+
+grupo equipo_junior {
+    miembros: tec_nuevo, op_principiante
+}
+
+# Análisis comparativo
+estadisticas para grupo equipo_senior
+estadisticas para grupo equipo_junior
+
+# Predicciones basadas en Fisher
+predecir rendimiento de tec_nuevo
+```
+
+## 📈 Análisis Estadístico
+
+### Coeficiente de Fisher
+El sistema implementa análisis discriminante de Fisher para:
+- **Clasificación automática** de empleados en grupos de rendimiento
+- **Predicción de rendimiento** basada en evaluaciones históricas
+- **Identificación de variables discriminantes** más relevantes
+
+### Métricas Calculadas
+- **Media aritmética** por criterio y grupo
+- **Desviación estándar** para variabilidad
+- **Análisis de varianza** entre grupos
+- **Coeficientes de discriminación** Fisher
+
+## 🧪 Tests Incluidos
+
+El proyecto incluye varios archivos de test:
+
+- **`test_minimal.txt`** - Funcionalidad básica
+- **`demo_simple.txt`** - Demo interactivo
+- **`test_completo.txt`** - Suite completa
+- **`test_fisher_avanzado.txt`** - Casos avanzados
+
+```bash
+# Ejecutar tests
+./mi_interprete ../src/test_minimal.txt
+./mi_interprete ../src/demo_simple.txt
+./mi_interprete ../src/test_fisher_avanzado.txt
+```
+
+## 📊 Resultados de Ejemplo
+
+```
+=== RANKING - Productividad ===
+1. Pedro Gómez (Ingeniero) - Puntuación: 4.80
+2. Ana Ruiz (Arquitecto) - Puntuación: 4.50
+3. Carlos López (Operario) - Puntuación: 3.80
+
+=== ESTADÍSTICAS DEL GRUPO: equipo_lider ===
+Productividad: Media = 4.76, Desv. Std = 0.13 (n=10)
+
+=== PREDICCIÓN DE RENDIMIENTO ===
+Predicción para Pedro Gómez: ALTO (Promedio: 4.80)
+Predicción para Carlos López: MEDIO (Promedio: 3.80)
+```
+
+## 🏗️ Arquitectura del Sistema
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Archivo DSL   │───▶│   ANTLR Parser  │───▶│   AST Tree      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                                        │
+                                                        ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Reportes      │◀───│  EvalVisitor    │◀───│ Sistema Fisher  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### Componentes Principales
+
+- **`EvaluacionFisher.g4`** - Gramática ANTLR del DSL
+- **`EvalVisitor.cpp/h`** - Visitor para procesamiento del AST
+- **`SistemaEvaluacion.cpp/h`** - Lógica de negocio y análisis estadístico
+- **`main.cpp`** - Punto de entrada del intérprete
+
+## 🐳 Docker
+
+### Dockerfile Incluido
+```dockerfile
+FROM ubuntu:20.04
+# Configuración completa de entorno C++/ANTLR
+# Java 11, CMake, GCC, ANTLR 4.12.0
+```
+
+### Comandos Docker
+```bash
+# Construir imagen
+docker build -t fisher-evaluacion .
+
+# Ejecutar contenedor
+docker run -it --name cpp_antlr_env fisher-evaluacion
+
+# Ejecutar tests
+docker exec -w /app/build cpp_antlr_env ./mi_interprete /app/src/demo_simple.txt
+```
+
+## 🤝 Contribuir
+
+### Cómo Contribuir
+
+1. **Fork** el repositorio
+2. **Crea** una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** a la rama (`git push origin feature/AmazingFeature`)
+5. **Abre** un Pull Request
+
+### Guías de Desarrollo
+
+- Seguir estándares de **C++17**
+- Añadir **tests** para nuevas funcionalidades
+- Mantener **documentación** actualizada
+- Usar **conventional commits**
+
+## 📋 Roadmap
+
+### Próximas Características
+
+- [ ] **Interfaz web** con dashboard interactivo
+- [ ] **Exportación** a PDF/Excel
+- [ ] **API REST** para integración
+- [ ] **Machine Learning** avanzado
+- [ ] **Visualizaciones** gráficas
+- [ ] **Base de datos** persistente
+- [ ] **Autenticación** y roles de usuario
+- [ ] **Notificaciones** automáticas
+
+### Mejoras Técnicas
+
+- [ ] **Optimización** de algoritmos estadísticos
+- [ ] **Paralelización** de cálculos
+- [ ] **Validación** de datos mejorada
+- [ ] **Logging** estructurado
+- [ ] **Profiling** y optimización
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## 👥 Autores
+
+- **Jaed69** - *Desarrollo inicial* - [GitHub](https://github.com/Jaed69)
+
+## 🙏 Agradecimientos
+
+- **ANTLR Team** por el excelente framework de parsing
+- **Comunidad C++** por las mejores prácticas
+- **Universidad** por el apoyo académico
+- **Contribuidores** del proyecto
+
+---
+
+<div align="center">
+  <strong>⭐ Si te gusta este proyecto, dale una estrella en GitHub! ⭐</strong>
+</div>
+
+## 📞 Contacto
+
+Para preguntas, sugerencias o colaboraciones:
+
+- **GitHub Issues**: [Crear issue](https://github.com/Jaed69/antlr-cpp-statistical-interpreter/issues/new)
+- **Email**: [Contactar](mailto:your.email@example.com)
+- **LinkedIn**: [Perfil](https://linkedin.com/in/yourprofile)
+
+---
+
+*Desarrollado con ❤️ para la comunidad de análisis estadístico en construcción*

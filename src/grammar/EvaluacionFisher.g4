@@ -205,4 +205,5 @@ IDENTIFICADOR: [a-zA-Z_][a-zA-Z0-9_]*;
 // Espacios en blanco y comentarios
 WS: [ \t\r\n]+ -> skip;
 COMENTARIO_LINEA: '//' ~[\r\n]* -> skip;
+COMENTARIO_HASH: '#' ~[\r\n]* -> skip;
 COMENTARIO_BLOQUE: '/*' .*? '*/' -> skip;

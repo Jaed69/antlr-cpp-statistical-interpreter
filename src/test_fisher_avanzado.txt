@@ -1,0 +1,297 @@
+// Test Avanzado: Sistema Completo de Evaluación Fisher
+// Caso de uso: Empresa constructora con análisis discriminante
+
+// === DECLARACIÓN DE EMPLEADOS ===
+
+empleado juan_perez {
+    nombre: "Juan Pérez García"
+    cargo: ingeniero
+    experiencia: 5 anos
+    area: estructural
+    rendimiento: alto
+}
+
+empleado maria_lopez {
+    nombre: "María López Rodríguez"
+    cargo: arquitecto
+    experiencia: 8 anos
+    area: acabados
+    rendimiento: alto
+}
+
+empleado carlos_ruiz {
+    nombre: "Carlos Ruiz Mendoza"
+    cargo: supervisor
+    experiencia: 6 anos
+    area: obra_civil
+    rendimiento: alto
+}
+
+empleado ana_garcia {
+    nombre: "Ana García Fernández"
+    cargo: operario
+    experiencia: 3 anos
+    area: instalaciones
+    rendimiento: medio
+}
+
+empleado luis_martinez {
+    nombre: "Luis Martínez Silva"
+    cargo: tecnico
+    experiencia: 4 anos
+    area: seguridad
+    rendimiento: medio
+}
+
+empleado sofia_torres {
+    nombre: "Sofía Torres Vega"
+    cargo: operario
+    experiencia: 2 anos
+    area: calidad
+    rendimiento: bajo
+}
+
+// === DECLARACIÓN DE GRUPOS PARA ANÁLISIS DISCRIMINANTE ===
+
+grupo alto_rendimiento {
+    miembros: juan_perez, maria_lopez, carlos_ruiz
+}
+
+grupo medio_rendimiento {
+    miembros: ana_garcia, luis_martinez
+}
+
+grupo bajo_rendimiento {
+    miembros: sofia_torres
+}
+
+grupo ingenieros_senior {
+    miembros: juan_perez, maria_lopez, carlos_ruiz
+}
+
+grupo operarios_junior {
+    miembros: ana_garcia, sofia_torres
+}
+
+// === EVALUACIONES INDIVIDUALES ===
+
+evaluar juan_perez {
+    productividad: 4.8
+    calidad_trabajo: 4.6
+    seguridad_laboral: 4.9
+    cumplimiento_plazos: 4.5
+    conocimiento_tecnico: 4.7
+    adaptabilidad: 4.4
+    asistencia: 4.9
+}
+
+evaluar maria_lopez {
+    productividad: 4.9
+    calidad_trabajo: 4.8
+    seguridad_laboral: 4.5
+    cumplimiento_plazos: 4.7
+    conocimiento_tecnico: 4.8
+    adaptabilidad: 4.8
+    asistencia: 4.6
+}
+
+evaluar carlos_ruiz {
+    productividad: 4.6
+    calidad_trabajo: 4.4
+    seguridad_laboral: 4.8
+    cumplimiento_plazos: 4.6
+    conocimiento_tecnico: 4.3
+    adaptabilidad: 4.3
+    asistencia: 4.7
+}
+
+evaluar ana_garcia {
+    productividad: 3.8
+    calidad_trabajo: 3.9
+    seguridad_laboral: 4.2
+    cumplimiento_plazos: 3.7
+    conocimiento_tecnico: 3.8
+    adaptabilidad: 3.8
+    asistencia: 4.1
+}
+
+evaluar luis_martinez {
+    productividad: 3.9
+    calidad_trabajo: 4.0
+    seguridad_laboral: 4.5
+    cumplimiento_plazos: 3.9
+    conocimiento_tecnico: 4.0
+    adaptabilidad: 4.0
+    asistencia: 4.2
+}
+
+evaluar sofia_torres {
+    productividad: 3.2
+    calidad_trabajo: 3.4
+    seguridad_laboral: 3.8
+    cumplimiento_plazos: 3.1
+    conocimiento_tecnico: 3.3
+    adaptabilidad: 3.3
+    asistencia: 3.6
+}
+
+// === CONSULTAS Y ANÁLISIS ===
+
+consultar empleado juan_perez
+consultar empleado maria_lopez
+consultar empleado sofia_torres
+
+// === RANKINGS POR DIFERENTES MÉTRICAS ===
+
+ranking por productividad limite 6
+ranking por calidad_trabajo limite 4
+
+// === ESTADÍSTICAS GENERALES Y POR GRUPOS ===
+
+estadisticas
+estadisticas para grupo alto_rendimiento
+estadisticas para grupo medio_rendimiento
+estadisticas para grupo ingenieros_senior
+
+// === PREDICCIONES DE RENDIMIENTO ===
+
+predecir rendimiento de ana_garcia
+predecir rendimiento de luis_martinez
+predecir rendimiento de sofia_torres
+
+empleado arq_senior {
+    nombre: "Ana Rodriguez"
+    cargo: arquitecto
+    experiencia: 12 anos
+    area: acabados
+    rendimiento: alto
+}
+
+empleado sup_experto {
+    nombre: "Luis Gonzalez"
+    cargo: supervisor
+    experiencia: 8 anos
+    area: seguridad
+    rendimiento: alto
+}
+
+// Empleados de rendimiento medio
+empleado tec_medio {
+    nombre: "Sofia Vargas"
+    cargo: tecnico
+    experiencia: 4 anos
+    area: instalaciones
+    rendimiento: medio
+}
+
+empleado op_medio {
+    nombre: "Pedro Jimenez"
+    cargo: operario
+    experiencia: 2 anos
+    area: obra_civil
+    rendimiento: medio
+}
+
+// Empleados de bajo rendimiento
+empleado op_nuevo {
+    nombre: "Maria Santos"
+    cargo: operario
+    experiencia: 1 anos
+    area: obra_civil
+    rendimiento: bajo
+}
+
+// Crear grupos para análisis discriminante
+grupo alto_performers {
+    miembros: ing_senior, arq_senior, sup_experto
+}
+
+grupo medio_performers {
+    miembros: tec_medio, op_medio
+}
+
+grupo bajo_performers {
+    miembros: op_nuevo
+}
+
+// Evaluaciones detalladas - Grupo Alto
+evaluar ing_senior {
+    productividad: 4.8
+    calidad_trabajo: 4.9
+    seguridad_laboral: 4.7
+    cumplimiento_plazos: 4.6
+    liderazgo: 4.8
+    conocimiento_tecnico: 4.9
+}
+
+evaluar arq_senior {
+    productividad: 4.7
+    calidad_trabajo: 4.9
+    seguridad_laboral: 4.5
+    cumplimiento_plazos: 4.8
+    liderazgo: 4.6
+    conocimiento_tecnico: 4.8
+}
+
+evaluar sup_experto {
+    productividad: 4.5
+    calidad_trabajo: 4.6
+    seguridad_laboral: 4.9
+    cumplimiento_plazos: 4.7
+    liderazgo: 4.9
+    conocimiento_tecnico: 4.4
+}
+
+// Evaluaciones - Grupo Medio
+evaluar tec_medio {
+    productividad: 3.8
+    calidad_trabajo: 3.9
+    seguridad_laboral: 4.0
+    cumplimiento_plazos: 3.7
+    liderazgo: 3.5
+    conocimiento_tecnico: 4.1
+}
+
+evaluar op_medio {
+    productividad: 3.5
+    calidad_trabajo: 3.6
+    seguridad_laboral: 4.2
+    cumplimiento_plazos: 3.4
+    liderazgo: 3.2
+    conocimiento_tecnico: 3.3
+}
+
+// Evaluaciones - Grupo Bajo
+evaluar op_nuevo {
+    productividad: 2.8
+    calidad_trabajo: 2.9
+    seguridad_laboral: 3.8
+    cumplimiento_plazos: 2.5
+    liderazgo: 2.3
+    conocimiento_tecnico: 2.7
+}
+
+// ===== ANÁLISIS Y REPORTES =====
+
+// Consultas individuales detalladas
+consultar empleado ing_senior
+consultar empleado tec_medio
+consultar empleado op_nuevo
+
+// Rankings por diferentes métricas
+ranking por productividad limite 6
+ranking por liderazgo limite 6
+ranking por conocimiento_tecnico limite 6
+
+// Estadísticas por grupos
+estadisticas para grupo alto_performers
+estadisticas para grupo medio_performers
+estadisticas para grupo bajo_performers
+
+// Estadísticas generales
+estadisticas
+
+// Predicciones de rendimiento
+predecir rendimiento de tec_medio
+predecir rendimiento de op_medio
+predecir rendimiento de op_nuevo

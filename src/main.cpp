@@ -11,14 +11,22 @@
 
 using namespace antlr4;
 
-int main() {
+int main(int argc, char* argv[]) {
     std::cout << "=== SISTEMA DE EVALUACIÓN DE EMPLEADOS - COEFICIENTE DE FISHER ===" << std::endl;
     
-    // Intentar abrir el archivo de ejemplo
+    // Determinar el archivo a usar
+    std::string filename;
+    if (argc > 1) {
+        filename = argv[1];
+    } else {
+        filename = "../src/test_fisher_avanzado.txt";
+    }
+    
+    // Intentar abrir el archivo
     std::ifstream stream;
-    stream.open("../src/test_completo.txt");
+    stream.open(filename);
     if (!stream) {
-        std::cout << "No se encontró test_simple.txt, intentando con ejemplo_evaluacion.txt..." << std::endl;
+        std::cout << "No se encontró " << filename << ", intentando con ejemplo_evaluacion.txt..." << std::endl;
         stream.open("../src/ejemplo_evaluacion.txt");
         if (!stream) {
             std::cout << "Intentando con input.txt..." << std::endl;
