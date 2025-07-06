@@ -78,35 +78,14 @@ make
 ./mi_interprete ../src/demo_simple.txt
 ```
 
-# Ejecutar compilación
-docker run --rm -v "${PWD}:/app" fisher-interpreter bash -c "
-    cd /app && 
-    java -jar /opt/antlr/antlr4-4.12.0-complete.jar -Dlanguage=Cpp -o build/generated -visitor -no-listener src/grammar/EvaluacionFisher.g4 &&
-    mkdir -p build && cd build && 
-    cmake .. && make -j4
-"
+# Construir y ejecutar con Docker
+docker build -t fisher-evaluacion .
+docker run -it --name cpp_antlr_env fisher-evaluacion
 
-# Ejecutar el sistema
-docker run --rm -v "${PWD}:/app" fisher-interpreter bash -c "cd /app/build && ./mi_interprete"
-```
-
-### Opción 2: Compilación Local
-```bash
-# Instalar dependencias (Ubuntu/Debian)
-sudo apt-get update
-sudo apt-get install cmake build-essential openjdk-17-jdk
-
-# Descargar ANTLR4
-wget https://www.antlr.org/download/antlr-4.12.0-complete.jar
-sudo mkdir -p /opt/antlr
-sudo cp antlr-4.12.0-complete.jar /opt/antlr/
-
-# Compilar proyecto
-mkdir -p build && cd build
-cmake .. && make -j4
-
-# Ejecutar
-./mi_interprete
+# Dentro del contenedor
+cd /app/build
+make
+./mi_interprete /app/src/demo_simple.txt
 ```
 
 ## 📋 Tipos de Datos del Sistema
@@ -251,122 +230,386 @@ predecir rendimiento de carlos_ruiz
 }
 ```
 
-### Declaración de Criterio
-```
-criterio [id] {
-    peso: [numero]
-    tipo: [cuantitativo|cualitativo|mixto]
-    metrica: [metrica_evaluacion]
-}
+## 🏗️ Análisis Estadístico
+
+El sistema implementa análisis discriminante de Fisher para:
+- **Clasificación automática** de empleados en grupos de rendimiento
+- **Predicción de rendimiento** basada en evaluaciones históricas
+- **Identificación de variables discriminantes** más relevantes
+
+### Métricas Calculadas
+- **Media aritmética** por criterio y grupo
+- **Desviación estándar** para variabilidad
+- **Análisis de varianza** entre grupos
+- **Coeficientes de discriminación** Fisher
+
+## 📚 Gramática ANTLR - Especificación Técnica
+
+### 🔤 Definición de la Gramática
+
+El sistema utiliza una gramática ANTLR4 especializada llamada `EvaluacionFisher.g4` que define la sintaxis completa del DSL para evaluación de empleados. A continuación se presenta la gramática completa con explicaciones:
+
+```antlr
+grammar EvaluacionFisher;
+
+// Regla principal del sistema
+sistema: (declaracion | evaluacion | consulta)+ EOF;
+
+// Declaraciones de empleados y criterios
+declaracion: declaracionEmpleado | declaracionCriterio | declaracionGrupo;
+
+// Declaración de empleado
+declaracionEmpleado: 
+    EMPLEADO IDENTIFICADOR LBRACE
+        atributoEmpleado+
+    RBRACE;
+
+atributoEmpleado: 
+    NOMBRE DOSPUNTOS CADENA
+    | CARGO DOSPUNTOS tipoCargo
+    | EXPERIENCIA DOSPUNTOS NUMERO ANOS
+    | AREA DOSPUNTOS areaConstructora
+    | RENDIMIENTO DOSPUNTOS nivelRendimiento;
+
+// Tipos de cargos en construcción
+tipoCargo: INGENIERO | ARQUITECTO | SUPERVISOR | OPERARIO | TECNICO | ADMINISTRATIVO;
+
+// Áreas de construcción
+areaConstructora: ESTRUCTURAL | ACABADOS | INSTALACIONES | OBRA_CIVIL | SEGURIDAD | CALIDAD;
+
+// Niveles de rendimiento
+nivelRendimiento: ALTO | MEDIO | BAJO;
+
+// Declaración de criterios de evaluación
+declaracionCriterio:
+    CRITERIO IDENTIFICADOR LBRACE
+        (PESO DOSPUNTOS NUMERO |
+        TIPO DOSPUNTOS tipoCriterio |
+        METRICA DOSPUNTOS metricaCriterio)+
+    RBRACE;
+
+// Tipos de criterios
+tipoCriterio: CUANTITATIVO | CUALITATIVO | MIXTO;
+
+// Métricas específicas para construcción
+metricaCriterio: 
+    PRODUCTIVIDAD | CALIDAD_TRABAJO | SEGURIDAD_LABORAL | 
+    CUMPLIMIENTO_PLAZOS | LIDERAZGO | TRABAJO_EQUIPO |
+    CONOCIMIENTO_TECNICO | ADAPTABILIDAD | ASISTENCIA;
+
+// Declaración de grupos para análisis discriminante
+declaracionGrupo:
+    GRUPO IDENTIFICADOR LBRACE
+        MIEMBROS DOSPUNTOS listaEmpleados
+    RBRACE;
+
+listaEmpleados: IDENTIFICADOR (COMA IDENTIFICADOR)*;
+
+// Evaluaciones individuales
+evaluacion: evaluacionIndividual | evaluacionComparativa;
+
+evaluacionIndividual:
+    EVALUAR IDENTIFICADOR LBRACE
+        criterioValoracion+
+    RBRACE;
+
+evaluacionComparativa:
+    COMPARAR GRUPO IDENTIFICADOR CON GRUPO IDENTIFICADOR
+    USANDO variable (COMA variable)*;
+
+criterioValoracion:
+    variable DOSPUNTOS valoracion;
+
+variable: 
+    PRODUCTIVIDAD | CALIDAD_TRABAJO | SEGURIDAD_LABORAL |
+    CUMPLIMIENTO_PLAZOS | LIDERAZGO | TRABAJO_EQUIPO |
+    CONOCIMIENTO_TECNICO | ADAPTABILIDAD | ASISTENCIA;
+
+valoracion: NUMERO | nivelCualitativo;
+
+nivelCualitativo: 
+    EXCELENTE | BUENO | REGULAR | DEFICIENTE | MUY_DEFICIENTE;
+
+// Análisis Fisher
+calculoFisher:
+    FISHER LPAREN
+        GRUPO_A DOSPUNTOS IDENTIFICADOR COMA
+        GRUPO_B DOSPUNTOS IDENTIFICADOR COMA
+        VARIABLES DOSPUNTOS listaVariables
+    RPAREN;
+
+listaVariables: variable (COMA variable)*;
+
+// Consultas del sistema
+consulta: 
+    consultaEmpleado | consultaRanking | consultaEstadisticas | 
+    consultaPrediccion | calculoFisher;
+
+consultaEmpleado: CONSULTAR EMPLEADO IDENTIFICADOR;
+
+consultaRanking: 
+    RANKING POR variable LIMITE NUMERO;
+
+consultaEstadisticas: 
+    ESTADISTICAS (PARA GRUPO IDENTIFICADOR)?;
+
+consultaPrediccion: 
+    PREDECIR RENDIMIENTO DE IDENTIFICADOR;
+
+// TOKENS - Palabras clave del dominio
+EMPLEADO: 'empleado' | 'EMPLEADO';
+CRITERIO: 'criterio' | 'CRITERIO';
+GRUPO: 'grupo' | 'GRUPO';
+EVALUAR: 'evaluar' | 'EVALUAR';
+COMPARAR: 'comparar' | 'COMPARAR';
+CONSULTAR: 'consultar' | 'CONSULTAR';
+RANKING: 'ranking' | 'RANKING';
+ESTADISTICAS: 'estadisticas' | 'ESTADISTICAS';
+PREDECIR: 'predecir' | 'PREDECIR';
+FISHER: 'fisher' | 'FISHER';
+
+// Atributos de empleado
+NOMBRE: 'nombre' | 'NOMBRE';
+CARGO: 'cargo' | 'CARGO';
+EXPERIENCIA: 'experiencia' | 'EXPERIENCIA';
+AREA: 'area' | 'AREA';
+RENDIMIENTO: 'rendimiento' | 'RENDIMIENTO';
+
+// Tipos de cargo
+INGENIERO: 'ingeniero' | 'INGENIERO';
+ARQUITECTO: 'arquitecto' | 'ARQUITECTO';
+SUPERVISOR: 'supervisor' | 'SUPERVISOR';
+OPERARIO: 'operario' | 'OPERARIO';
+TECNICO: 'tecnico' | 'TECNICO';
+ADMINISTRATIVO: 'administrativo' | 'ADMINISTRATIVO';
+
+// Áreas de construcción
+ESTRUCTURAL: 'estructural' | 'ESTRUCTURAL';
+ACABADOS: 'acabados' | 'ACABADOS';
+INSTALACIONES: 'instalaciones' | 'INSTALACIONES';
+OBRA_CIVIL: 'obra_civil' | 'OBRA_CIVIL';
+SEGURIDAD: 'seguridad' | 'SEGURIDAD';
+CALIDAD: 'calidad' | 'CALIDAD';
+
+// Niveles
+ALTO: 'alto' | 'ALTO';
+MEDIO: 'medio' | 'MEDIO';
+BAJO: 'bajo' | 'BAJO';
+
+// Métricas de evaluación
+PRODUCTIVIDAD: 'productividad' | 'PRODUCTIVIDAD';
+CALIDAD_TRABAJO: 'calidad_trabajo' | 'CALIDAD_TRABAJO';
+SEGURIDAD_LABORAL: 'seguridad_laboral' | 'SEGURIDAD_LABORAL';
+CUMPLIMIENTO_PLAZOS: 'cumplimiento_plazos' | 'CUMPLIMIENTO_PLAZOS';
+LIDERAZGO: 'liderazgo' | 'LIDERAZGO';
+TRABAJO_EQUIPO: 'trabajo_equipo' | 'TRABAJO_EQUIPO';
+CONOCIMIENTO_TECNICO: 'conocimiento_tecnico' | 'CONOCIMIENTO_TECNICO';
+ADAPTABILIDAD: 'adaptabilidad' | 'ADAPTABILIDAD';
+ASISTENCIA: 'asistencia' | 'ASISTENCIA';
+
+// Niveles cualitativos
+EXCELENTE: 'EXCELENTE' | 'excelente';
+BUENO: 'BUENO' | 'bueno';
+REGULAR: 'REGULAR' | 'regular';
+DEFICIENTE: 'DEFICIENTE' | 'deficiente';
+MUY_DEFICIENTE: 'MUY_DEFICIENTE' | 'muy_deficiente';
+
+// Tipos de criterio
+CUANTITATIVO: 'cuantitativo' | 'CUANTITATIVO';
+CUALITATIVO: 'cualitativo' | 'CUALITATIVO';
+MIXTO: 'mixto' | 'MIXTO';
+
+// Palabras clave adicionales
+PESO: 'peso' | 'PESO';
+TIPO: 'tipo' | 'TIPO';
+METRICA: 'metrica' | 'METRICA';
+MIEMBROS: 'miembros' | 'MIEMBROS';
+GRUPO_A: 'grupo_a' | 'GRUPO_A';
+GRUPO_B: 'grupo_b' | 'GRUPO_B';
+VARIABLES: 'variables' | 'VARIABLES';
+USANDO: 'usando' | 'USANDO';
+CON: 'con' | 'CON';
+DE: 'de' | 'DE';
+POR: 'por' | 'POR';
+PARA: 'para' | 'PARA';
+LIMITE: 'limite' | 'LIMITE';
+ANOS: 'años' | 'AÑOS' | 'anos' | 'ANOS' | 'anios' | 'ANIOS';
+
+// Símbolos
+LBRACE: '{';
+RBRACE: '}';
+LPAREN: '(';
+RPAREN: ')';
+DOSPUNTOS: ':';
+COMA: ',';
+
+// Tipos de datos
+NUMERO: [0-9]+ ('.' [0-9]+)?;
+CADENA: '"' (~["\r\n])* '"' | '\'' (~['\r\n])* '\'';
+IDENTIFICADOR: [a-zA-Z_][a-zA-Z0-9_]*;
+
+// Espacios en blanco y comentarios
+WS: [ \t\r\n]+ -> skip;
+COMENTARIO_LINEA: '//' ~[\r\n]* -> skip;
+COMENTARIO_HASH: '#' ~[\r\n]* -> skip;
+COMENTARIO_BLOQUE: '/*' .*? '*/' -> skip;
 ```
 
-### Declaración de Grupo
+### 🔍 Análisis Detallado de la Gramática
+
+#### 📋 **1. Estructura Jerárquica**
+
+La gramática sigue una estructura jerárquica que refleja el dominio de evaluación de empleados:
+
 ```
-grupo [id] {
-    miembros: [empleado1], [empleado2], ...
-}
+Sistema
+├── Declaraciones
+│   ├── Empleados
+│   ├── Criterios
+│   └── Grupos
+├── Evaluaciones
+│   ├── Individuales
+│   └── Comparativas
+└── Consultas
+    ├── Información
+    ├── Rankings
+    ├── Estadísticas
+    └── Predicciones
 ```
 
-### Evaluación Individual
+#### 🏗️ **2. Reglas de Producción Principales**
+
+**Sistema Principal:**
+```antlr
+sistema: (declaracion | evaluacion | consulta)+ EOF;
 ```
-evaluar [empleado_id] {
-    [metrica]: [valor_numerico]
-    [metrica]: [EXCELENTE|BUENO|REGULAR|DEFICIENTE|MUY_DEFICIENTE]
-}
+- **Interpretación**: Un programa válido consiste en una o más declaraciones, evaluaciones o consultas, terminando con EOF.
+- **Flexibilidad**: Permite mezclar tipos de sentencias en cualquier orden.
+
+**Declaración de Empleado:**
+```antlr
+declaracionEmpleado: 
+    EMPLEADO IDENTIFICADOR LBRACE
+        atributoEmpleado+
+    RBRACE;
+```
+- **Interpretación**: Define la estructura de un empleado con identificador único y atributos obligatorios.
+- **Extensibilidad**: Permite múltiples atributos por empleado.
+
+#### 🎯 **3. Tokens Especializados**
+
+**Cargos en Construcción:**
+```antlr
+tipoCargo: INGENIERO | ARQUITECTO | SUPERVISOR | OPERARIO | TECNICO | ADMINISTRATIVO;
+```
+- **Especialización**: Tokens específicos del dominio de construcción.
+- **Validación**: Solo acepta cargos válidos en el sector.
+
+**Métricas de Evaluación:**
+```antlr
+metricaCriterio: 
+    PRODUCTIVIDAD | CALIDAD_TRABAJO | SEGURIDAD_LABORAL | 
+    CUMPLIMIENTO_PLAZOS | LIDERAZGO | TRABAJO_EQUIPO |
+    CONOCIMIENTO_TECNICO | ADAPTABILIDAD | ASISTENCIA;
+```
+- **Completitud**: Cubre aspectos técnicos, humanos y de seguridad.
+- **Relevancia**: Métricas específicas para evaluación en construcción.
+
+#### 🔧 **4. Características Avanzadas**
+
+**Soporte para Comentarios:**
+```antlr
+WS: [ \t\r\n]+ -> skip;
+COMENTARIO_LINEA: '//' ~[\r\n]* -> skip;
+COMENTARIO_HASH: '#' ~[\r\n]* -> skip;
+COMENTARIO_BLOQUE: '/*' .*? '*/' -> skip;
+```
+- **Flexibilidad**: Tres tipos de comentarios (C++, Python, C).
+- **Documentación**: Permite documentar código DSL inline.
+
+**Valoraciones Mixtas:**
+```antlr
+valoracion: NUMERO | nivelCualitativo;
+nivelCualitativo: EXCELENTE | BUENO | REGULAR | DEFICIENTE | MUY_DEFICIENTE;
+```
+- **Versatilidad**: Acepta valores numéricos (1.0-5.0) y cualitativos.
+- **Usabilidad**: Facilita entrada de datos para usuarios no técnicos.
+
+#### 📊 **5. Patrones de Consulta**
+
+**Consultas Estructuradas:**
+```antlr
+consultaRanking: RANKING POR variable LIMITE NUMERO;
+consultaEstadisticas: ESTADISTICAS (PARA GRUPO IDENTIFICADOR)?;
+consultaPrediccion: PREDECIR RENDIMIENTO DE IDENTIFICADOR;
+```
+- **Naturalidad**: Sintaxis similar al lenguaje natural.
+- **Especificidad**: Consultas orientadas a casos de uso reales.
+
+#### 🎯 **6. Análisis de Fisher**
+
+**Cálculo Discriminante:**
+```antlr
+calculoFisher:
+    FISHER LPAREN
+        GRUPO_A DOSPUNTOS IDENTIFICADOR COMA
+        GRUPO_B DOSPUNTOS IDENTIFICADOR COMA
+        VARIABLES DOSPUNTOS listaVariables
+    RPAREN;
+```
+- **Funcionalidad Avanzada**: Implementa análisis discriminante de Fisher.
+- **Sintaxis Clara**: Especifica grupos y variables para el análisis.
+
+### 🔄 Proceso de Compilación ANTLR
+
+#### **1. Generación de Código**
+```bash
+java -jar antlr4-4.12.0-complete.jar -Dlanguage=Cpp -o generated -visitor -no-listener EvaluacionFisher.g4
 ```
 
-### Cálculo del Coeficiente de Fisher
-```
-fisher(
-    grupo_a: [grupo_id],
-    grupo_b: [grupo_id],
-    variables: [variable1], [variable2], ...
-)
-```
+#### **2. Archivos Generados**
+- `EvaluacionFisherLexer.cpp/.h` - Analizador léxico
+- `EvaluacionFisherParser.cpp/.h` - Analizador sintáctico  
+- `EvaluacionFisherBaseVisitor.cpp/.h` - Clase base del visitor
+- `EvaluacionFisherVisitor.h` - Interfaz del visitor
 
-### Consultas
-```
-consultar empleado [id]
-ranking por [metrica] limite [numero]
-estadisticas de [metrica] para grupo [grupo_id]
-predecir rendimiento de [empleado_id]
-```
-
-## Ejemplo de Uso
-
-Crea un archivo con el siguiente contenido:
-
+#### **3. Integración con C++**
 ```cpp
-// Declaración de variables
-int a = 5;
-int b = 15;
-float pi = 3.14159;
+// Configurar ANTLR
+ANTLRInputStream input(stream);
+EvaluacionFisherLexer lexer(&input);
+CommonTokenStream tokens(&lexer);
+EvaluacionFisherParser parser(&tokens);
 
-// Operaciones básicas
-a + b;          // Salida: 20
-a * b;          // Salida: 75
-pi * 2;         // Salida: 6.28318
+// Parsear el archivo
+tree::ParseTree* tree = parser.sistema();
 
-// Análisis estadístico
-mean(1, 2, 3, 4, 5);        // Salida: 3
-variance(1, 2, 3, 4, 5);    // Salida: 2
-fisher(1, 2, 3, 4, 5);      // Salida: 0
+// Ejecutar el visitor
+EvaluacionVisitor visitor;
+visitor.visit(tree);
+```
+## 🔧 Testing y Validación
+
+### Casos de Prueba Incluidos
+1. **test_minimal.txt**: Caso básico (1 empleado)
+2. **test_completo.txt**: Caso avanzado (3 empleados, grupos, evaluaciones)
+3. **test_fisher_avanzado.txt**: Caso con análisis Fisher completo
+4. **demo_simple.txt**: Demostración interactiva del sistema
+
+### Ejecutar Tests
+```bash
+# Ejecutar todos los tests dentro del contenedor Docker
+./mi_interprete /app/src/test_minimal.txt
+./mi_interprete /app/src/test_completo.txt
+./mi_interprete /app/src/test_fisher_avanzado.txt
+./mi_interprete /app/src/demo_simple.txt
 ```
 
-## Gramática
-
-El intérprete usa la gramática ANTLR4 definida en `src/grammar/EmployeeEval.g4`:
-
-- **Variables**: `TIPO ID = expresión;` donde TIPO es `int`, `float` o `string`
-- **Expresiones**: Soporte para operaciones aritméticas con precedencia adecuada
-- **Funciones**: Funciones estadísticas incorporadas
-- **Comentarios**: Comentarios de línea que comienzan con `//`
-
-## Estructura del Proyecto
-
-```
-├── CMakeLists.txt          # Configuración de compilación
-├── Dockerfile              # Configuración del contenedor Docker
-├── docker-compose.yml      # Configuración de Docker Compose
-├── src/
-│   ├── grammar/
-│   │   └── EmployeeEval.g4 # Definición de gramática ANTLR
-│   ├── main.cpp            # Programa principal del intérprete
-│   ├── EvalVisitor.cpp     # Implementación del visitor
-│   ├── EvalVisitor.h       # Cabecera del visitor
-│   ├── SymbolTable.h       # Definición de tabla de símbolos
-│   └── input.txt           # Archivo de entrada para pruebas
-└── build/                  # Directorio de compilación (auto-generado)
-```
-
-## Requisitos
-
-- Compilador compatible con **C++17**
-- **CMake 3.16+**
-- **Java 17+** (para el JAR de ANTLR4)
-- **ANTLR 4.12.0**
-- **Docker** (para desarrollo contenerizado)
-
-## Compilación desde el Código Fuente
-
-Si prefieres no usar Docker:
-
-1. Instalar dependencias (C++17, CMake, Java 17+)
-2. Descargar el JAR completo de ANTLR 4.12.0
-3. Compilar:
-   ```bash
-   mkdir build && cd build
-   cmake ..
-   make
-   ```
-
-## Contribuir
-
-1. Haz fork del repositorio
-2. Crea tu rama de característica (`git checkout -b feature/caracteristica-increible`)
-3. Confirma tus cambios (`git commit -m 'Agregar característica increíble'`)
-4. Empuja a la rama (`git push origin feature/caracteristica-increible`)
-5. Abre un Pull Request
+### Métricas de Calidad
+- ✅ **Cobertura de código**: 95%+
+- ✅ **Casos de prueba**: 15+ escenarios
+- ✅ **Validación de gramática**: Sin conflictos
+- ✅ **Memory leaks**: Cero detectados
 
 ## ⚙️ Configuración Avanzada
 
@@ -397,7 +640,7 @@ gdb ./mi_interprete
 Fisher/
 ├── src/
 │   ├── grammar/
-│   │   └── EvaluacionFisher.g4      # Gramática ANTLR4
+│   │   └── EvaluacionFisher.g4      # Gramática ANTLR4 actual
 │   ├── main.cpp                     # Punto de entrada
 │   ├── EvalVisitor.h/.cpp          # Implementación del visitor
 │   ├── SistemaEvaluacion.h/.cpp    # Engine de datos
@@ -422,25 +665,6 @@ Fisher/
 - **Memoria utilizada**: ~50MB para datasets de 10,000 empleados
 - **Compilación**: ~30 segundos en hardware moderno
 
-## 🔬 Testing y Validación
-
-### Casos de Prueba Incluidos
-1. **test_minimal.txt**: Caso básico (1 empleado)
-2. **test_completo.txt**: Caso avanzado (3 empleados, grupos, evaluaciones)
-3. **ejemplo_evaluacion.txt**: Caso real de empresa constructora
-
-### Validación Automática
-```bash
-# Ejecutar todos los tests
-docker exec -i cpp_antlr_env bash -c "cd /app && ./run_tests.sh"
-```
-
-### Métricas de Calidad
-- ✅ **Cobertura de código**: 95%+
-- ✅ **Casos de prueba**: 15+ escenarios
-- ✅ **Validación de gramática**: Sin conflictos
-- ✅ **Memory leaks**: Cero detectados
-
 ## 🚀 Roadmap y Extensiones Futuras
 
 ### Próximas Funcionalidades
@@ -458,31 +682,15 @@ docker exec -i cpp_antlr_env bash -c "cd /app && ./run_tests.sh"
 
 ## 🤝 Contribuciones
 
-### Cómo Contribuir
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+- **ANTLR4**: https://www.antlr.org/
+- **CMake**: https://cmake.org/
+- **Docker**: https://www.docker.com/
+- **C++17**: https://isocpp.org/
 
-### Guías de Estilo
-- **C++**: Seguir estándar C++17
-- **Gramática ANTLR**: Usar convenciones camelCase para reglas
-- **Documentación**: Markdown con emojis descriptivos
-
-## 📞 Soporte y Contacto
-
-### Reportar Bugs
-- **GitHub Issues**: https://github.com/twofi/UPC-Fisher/issues
-- **Email**: jbrijan@example.com
-
-### Comunidad
-- **Discord**: [Fisher DSL Community](https://discord.gg/fisher-dsl)
-- **Foro**: [Discusiones del proyecto](https://github.com/twofi/UPC-Fisher/discussions)
-
-## 📖 Referencias y Recursos
-
-### Tecnologías Utilizadas
+### Papers Académicos
+- Fisher, R.A. (1936). "The use of multiple measurements in taxonomic problems"
+- Análisis discriminante en recursos humanos
+- DSL design patterns en ingeniería de software
 - **ANTLR4**: https://www.antlr.org/
 - **CMake**: https://cmake.org/
 - **Docker**: https://www.docker.com/
@@ -493,58 +701,18 @@ docker exec -i cpp_antlr_env bash -c "cd /app && ./run_tests.sh"
 - Análisis discriminante en recursos humanos
 - DSL design patterns en ingeniería de software
 
-### Cursos Recomendados
-- "Compilers: Principles, Techniques, and Tools" (Dragon Book)
-- "Language Implementation Patterns" por Terence Parr
-- "Modern C++ Design" por Andrei Alexandrescu
+## 🙏 Agradecimientos
 
-## 🏆 Reconocimientos
-
-Agradecimientos especiales a:
-- **Universidad Peruana de Ciencias Aplicadas (UPC)** por el soporte académico
-- **Terence Parr** por crear ANTLR4
-- **Comunidad Open Source** por las herramientas y bibliotecas utilizadas
-
-## 📄 Licencia
-
-Este proyecto es de código abierto y está disponible bajo la **Licencia MIT**.
-
-```
-MIT License
-
-Copyright (c) 2025 Jhamil Brijan Peña Cárdenas
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-## 👨‍💻 Autor
-
-**Jhamil Brijan Peña Cárdenas**
-- GitHub: [@twofi](https://github.com/twofi)
-- Universidad: Universidad Peruana de Ciencias Aplicadas (UPC)
-- Email: jbrijan@example.com
+- **ANTLR Team** por el excelente framework de parsing
+- **Comunidad C++** por las mejores prácticas
+- **Universidad Peruana de Ciencias Aplicadas (UPC)** por el apoyo académico
+- **Contribuidores** del proyecto
 
 ---
 
-⭐ **¡Si te gusta este proyecto, no olvides darle una estrella en GitHub!** ⭐
-
-Construido con ❤️ usando **ANTLR4**, **C++17** y **Docker**
+<div align="center">
+  <strong>⭐ Si te gusta este proyecto, dale una estrella en GitHub! ⭐</strong>
+</div>
 
 ## 🎯 Resultados de Pruebas Verificados
 
@@ -740,7 +908,7 @@ predecir rendimiento de operario_experimentado
 #### Declaración de Empleados
 ```python
 empleado juan_perez {
-    nombre: "Juan Pérez García"
+    nombre: "Juan Pérez"
     cargo: ingeniero
     experiencia: 5 anos
     area: estructural
@@ -806,14 +974,16 @@ predecir rendimiento de juan_perez
 - `cumplimiento_plazos` - Puntualidad en entregas
 - `conocimiento_tecnico` - Conocimientos técnicos
 - `liderazgo` - Capacidad de liderazgo
-- `adaptabilidad` - Adaptación a cambios
+- `adaptabilidad` - Capacidad de adaptación
 - `asistencia` - Asistencia y puntualidad
 
 ## 🧪 Ejemplos de Uso
 
-### Ejemplo Básico
-```python
-# Declarar empleados
+### 🧪 Ejemplos de Archivo DSL
+
+#### Ejemplo Básico (test_minimal.txt)
+```javascript
+// Empleado básico
 empleado ingeniero_principal {
     nombre: "Pedro Gómez"
     cargo: ingeniero
@@ -822,51 +992,47 @@ empleado ingeniero_principal {
     rendimiento: alto
 }
 
-empleado operario_nuevo {
-    nombre: "Carlos López"
-    cargo: operario
-    experiencia: 1 anos
-    area: obra_civil
-    rendimiento: bajo
-}
-
-# Evaluar empleados
+// Evaluación simple
 evaluar ingeniero_principal {
     productividad: 4.9
     calidad_trabajo: 4.8
     seguridad_laboral: 4.8
 }
 
-evaluar operario_nuevo {
-    productividad: 3.2
-    calidad_trabajo: 3.1
-    seguridad_laboral: 3.8
-}
-
-# Consultas
+// Consultas
 consultar empleado ingeniero_principal
-ranking por productividad limite 3
 estadisticas
-predecir rendimiento de operario_nuevo
 ```
 
-### Ejemplo Avanzado con Grupos
-```python
-# Crear grupos para análisis
-grupo equipo_senior {
-    miembros: ing_principal, arq_senior, sup_experto
+#### Ejemplo Avanzado (test_completo.txt)
+```javascript
+// Múltiples empleados con grupos y análisis
+empleado juan_perez {
+    nombre: "Juan Pérez"
+    cargo: ingeniero
+    experiencia: 5 anos
+    area: estructural
+    rendimiento: alto
 }
 
-grupo equipo_junior {
-    miembros: tec_nuevo, op_principiante
+grupo alto_rendimiento {
+    miembros: juan_perez, maria_lopez
 }
 
-# Análisis comparativo
-estadisticas para grupo equipo_senior
-estadisticas para grupo equipo_junior
+// Evaluaciones detalladas
+evaluar juan_perez {
+    productividad: 4.5
+    calidad_trabajo: 4.2
+    seguridad_laboral: 4.8
+    cumplimiento_plazos: 4.3
+    liderazgo: 4.1
+}
 
-# Predicciones basadas en Fisher
-predecir rendimiento de tec_nuevo
+// Análisis estadístico
+consultar empleado juan_perez
+ranking por productividad limite 3
+estadisticas para grupo alto_rendimiento
+predecir rendimiento de juan_perez
 ```
 
 ## 📈 Análisis Estadístico
@@ -893,9 +1059,10 @@ El proyecto incluye varios archivos de test:
 - **`test_fisher_avanzado.txt`** - Casos avanzados
 
 ```bash
-# Ejecutar tests
+# Ejecutar tests individuales
 ./mi_interprete ../src/test_minimal.txt
 ./mi_interprete ../src/demo_simple.txt
+./mi_interprete ../src/test_completo.txt
 ./mi_interprete ../src/test_fisher_avanzado.txt
 ```
 
@@ -937,23 +1104,17 @@ Predicción para Carlos López: MEDIO (Promedio: 3.80)
 
 ## 🐳 Docker
 
-### Dockerfile Incluido
-```dockerfile
-FROM ubuntu:20.04
-# Configuración completa de entorno C++/ANTLR
-# Java 11, CMake, GCC, ANTLR 4.12.0
-```
-
-### Comandos Docker
+### Comandos Docker Optimizados
 ```bash
 # Construir imagen
 docker build -t fisher-evaluacion .
 
-# Ejecutar contenedor
+# Ejecutar contenedor interactivo
 docker run -it --name cpp_antlr_env fisher-evaluacion
 
-# Ejecutar tests
+# Ejecutar tests específicos
 docker exec -w /app/build cpp_antlr_env ./mi_interprete /app/src/demo_simple.txt
+docker exec -w /app/build cpp_antlr_env ./mi_interprete /app/src/test_completo.txt
 ```
 
 ## 🤝 Contribuir
@@ -961,9 +1122,9 @@ docker exec -w /app/build cpp_antlr_env ./mi_interprete /app/src/demo_simple.txt
 ### Cómo Contribuir
 
 1. **Fork** el repositorio
-2. **Crea** una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** a la rama (`git push origin feature/AmazingFeature`)
+2. **Crea** una rama para tu feature (`git checkout -b feature/NuevaFuncionalidad`)
+3. **Commit** tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
+4. **Push** a la rama (`git push origin feature/NuevaFuncionalidad`)
 5. **Abre** un Pull Request
 
 ### Guías de Desarrollo
@@ -980,33 +1141,34 @@ docker exec -w /app/build cpp_antlr_env ./mi_interprete /app/src/demo_simple.txt
 - [ ] **Interfaz web** con dashboard interactivo
 - [ ] **Exportación** a PDF/Excel
 - [ ] **API REST** para integración
-- [ ] **Machine Learning** avanzado
-- [ ] **Visualizaciones** gráficas
+- [ ] **Machine Learning** avanzado para predicciones
+- [ ] **Visualizaciones** gráficas de datos
 - [ ] **Base de datos** persistente
 - [ ] **Autenticación** y roles de usuario
-- [ ] **Notificaciones** automáticas
 
 ### Mejoras Técnicas
 
 - [ ] **Optimización** de algoritmos estadísticos
-- [ ] **Paralelización** de cálculos
-- [ ] **Validación** de datos mejorada
-- [ ] **Logging** estructurado
-- [ ] **Profiling** y optimización
+- [ ] **Paralelización** de cálculos Fisher
+- [ ] **Validación** de datos de entrada mejorada
+- [ ] **Logging** estructurado y detallado
+- [ ] **Profiling** y optimización de performance
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está bajo la **Licencia MIT** - ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ## 👥 Autores
 
-- **Jaed69** - *Desarrollo inicial* - [GitHub](https://github.com/Jaed69)
+- **Jhamil Brijan Peña Cárdenas** - *Desarrollo inicial y arquitectura del sistema* - [GitHub](https://github.com/Jaed69)
+- **Mireya Nicole Sihuincha Schermuly** - *Desarrollo y testing* - [GitHub](https://github.com/sowiexsker894)
+- **Lizbeth Olivera Alvarez** - *Desarrollo y documentación* - [GitHub](https://github.com/Lisbeth851)
 
 ## 🙏 Agradecimientos
 
 - **ANTLR Team** por el excelente framework de parsing
 - **Comunidad C++** por las mejores prácticas
-- **Universidad** por el apoyo académico
+- **Universidad Peruana de Ciencias Aplicadas (UPC)** por el apoyo académico
 - **Contribuidores** del proyecto
 
 ---
@@ -1020,8 +1182,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 Para preguntas, sugerencias o colaboraciones:
 
 - **GitHub Issues**: [Crear issue](https://github.com/Jaed69/antlr-cpp-statistical-interpreter/issues/new)
-- **Email**: [Contactar](mailto:your.email@example.com)
-- **LinkedIn**: [Perfil](https://linkedin.com/in/yourprofile)
+- **Email**: Contactar a través del repositorio de GitHub
 
 ---
 
